@@ -13,9 +13,12 @@ from twilio.util import TwilioCapability
 # Declare and configure application
 app = Flask(__name__, static_url_path='/static')
 app.config.from_pyfile('local_settings.py')
-app.twilio_client = TwilioRestClient(
-        app.config['TWILIO_ACCOUNT_SID'],
-        app.config['TWILIO_AUTH_TOKEN'])
+if app.config['TWILIO_ACCOUNT_SID'] and app.config['TWILIO_AUTH_TOKEN']:
+    app.twilio_client = TwilioRestClient(
+            app.config['TWILIO_ACCOUNT_SID'],
+            app.config['TWILIO_AUTH_TOKEN'])
+else:
+    app.twilio_client = None
 
 # Route incoming callers listed in local_settings to agent endpoint.  
 # Otherwise, place them in the queue. 
@@ -104,12 +107,13 @@ def getHacker(request):
 
 def sendSmsToHackers(body, omit=None):
     messages = []
-    for hacker in app.config['HACKERS']:
-        if hacker['number'] != omit:
-            messages.append(app.twilio_client.sms.messages.create(
-                to=hacker['number'],
-                from_=app.config['TWILIO_CALLER_ID'],
-                body=body))
+    if app.twilio_client:
+        for hacker in app.config['HACKERS']:
+            if hacker['number'] != omit:
+                messages.append(app.twilio_client.sms.messages.create(
+                    to=hacker['number'],
+                    from_=app.config['TWILIO_CALLER_ID'],
+                    body=body))
     return messages
 
 
