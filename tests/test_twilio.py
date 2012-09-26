@@ -1,12 +1,17 @@
 import unittest
 from mock import patch
 
+from twilio.rest import TwilioRestClient
+
 from .context import app
 
 
 app.config['TWILIO_ACCOUNT_SID'] = 'ACxxxxxx'
 app.config['TWILIO_AUTH_TOKEN'] = 'yyyyyyyyy'
 app.config['TWILIO_CALLER_ID'] = '+15558675309'
+
+app.twilio_client = TwilioRestClient(app.config['TWILIO_ACCOUNT_SID'],
+        app.config['TWILIO_AUTH_TOKEN'])
 
 app.config['HACKERS'] = [
     {'name': 'Rob Spectre', 'number': '+15555555555'},
@@ -72,7 +77,7 @@ class TwilioTests(TwiMLTest):
 
     def test_callAsAgent(self):
         response = self.call(from_=app.config['HACKERS'][0]['number'])
-        
+
         self.assertTwiML(response)
         self.assertTrue("Redirect" in response.data, "Did not find Redirect " \
                 "verb, instead got: %s" % response.data)
