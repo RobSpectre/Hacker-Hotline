@@ -228,3 +228,7 @@ make test
 * [MIT License](http://www.opensource.org/licenses/mit-license.html)
 * Lovingly crafted by [Twilio New
  York](http://www.meetup.com/Twilio/New-York-NY/) 
+
+[![githalytics.com
+alpha](https://cruel-carlota.pagodabox.com/c24dd158e00552ddc381d60e661ba6e6
+"githalytics.com")](http://githalytics.com/RobSpectre/Hacker-Hotline)
